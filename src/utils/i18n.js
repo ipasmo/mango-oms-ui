@@ -44,7 +44,7 @@ const resources = {
       emptyCart: 'Your cart is empty',
       subtotal: 'Subtotal',
       total: 'Total',
-      continueShoppingupContinue Shopping',
+      continueShopping: 'Continue Shopping',
       
       // Orders
       orderHistory: 'Order History',
