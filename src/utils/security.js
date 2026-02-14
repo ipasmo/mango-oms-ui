@@ -103,11 +103,16 @@ export const isValidPhone = (phone) => {
 
 /**
  * Remove script tags and dangerous attributes
+ * Note: For comprehensive XSS protection, use sanitizeHtml() instead
+ * This function is kept for backward compatibility but relies on DOMPurify
  */
 export const removeScriptTags = (html) => {
-  return html
-    .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '')
-    .replace(/on\w+\s*=\s*["'][^"']*["']/gi, '');
+  // Use DOMPurify for comprehensive sanitization
+  // This avoids regex-based sanitization which can have edge cases
+  return DOMPurify.sanitize(html, {
+    ALLOWED_TAGS: ['p', 'br', 'b', 'i', 'em', 'strong', 'a'],
+    ALLOWED_ATTR: ['href'],
+  });
 };
 
 /**
