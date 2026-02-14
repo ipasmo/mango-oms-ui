@@ -1,15 +1,25 @@
+import { BrowserRouter } from 'react-router-dom';
+import { I18nextProvider } from 'react-i18next';
+import ErrorBoundary from '@components/common/ErrorBoundary';
+import CartDrawer from '@components/cart/CartDrawer';
+import AppRoutes from '@routes/AppRoutes';
+import i18n from '@utils/i18n';
+import '@assets/styles/global.css';
+
+/**
+ * Main App Component
+ * Root component with providers and routing
+ */
 function App() {
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="container mx-auto px-4 py-8">
-        <h1 className="text-3xl font-bold text-gray-900">
-          Mango OMS - Order Management System
-        </h1>
-        <p className="mt-4 text-gray-600">
-          All feature components have been successfully created!
-        </p>
-      </div>
-    </div>
+    <ErrorBoundary>
+      <I18nextProvider i18n={i18n}>
+        <BrowserRouter>
+          <AppRoutes />
+          <CartDrawer />
+        </BrowserRouter>
+      </I18nextProvider>
+    </ErrorBoundary>
   );
 }
 
