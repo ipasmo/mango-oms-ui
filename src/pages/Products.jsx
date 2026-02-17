@@ -9,27 +9,36 @@ export default function Products() {
   const [searchParams, setSearchParams] = useSearchParams();
   const {
     products,
+    categories,
     isLoading,
     error,
     currentPage,
     totalPages,
     totalProducts,
+    filters,
     setPage,
     setFilters,
+    fetchProducts,
+    fetchCategories,
   } = useProductStore();
 
   const [showFilters, setShowFilters] = useState(false);
 
+  // Initial load - fetch products and categories on mount
   useEffect(() => {
     document.title = 'Products - Mango OMS';
-    
-    // Initialize filters from URL params
+    fetchProducts();
+    fetchCategories();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // Update filters when URL params change
+  useEffect(() => {
     const category = searchParams.get('category') || '';
     const search = searchParams.get('search') || '';
     const minPrice = searchParams.get('minPrice') || null;
     const maxPrice = searchParams.get('maxPrice') || null;
-    const sortBy = searchParams.get('sortBy') || 'name';
-    const sortOrder = searchParams.get('sortOrder') || 'asc';
+    const sortBy = searchParams.get('sortBy') || 'featured';
 
     setFilters({
       category,
@@ -37,9 +46,9 @@ export default function Products() {
       minPrice: minPrice ? parseFloat(minPrice) : null,
       maxPrice: maxPrice ? parseFloat(maxPrice) : null,
       sortBy,
-      sortOrder,
     });
-  }, [searchParams, setFilters]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchParams.toString()]);
 
   const handleSearch = (query) => {
     const newParams = new URLSearchParams(searchParams);
@@ -52,12 +61,16 @@ export default function Products() {
   };
 
   const handleFilterChange = (newFilters) => {
-    const newParams = new URLSearchParams();
+    const newParams = new URLSearchParams(searchParams);
+    
     Object.entries(newFilters).forEach(([key, value]) => {
-      if (value !== null && value !== '') {
+      if (value !== null && value !== '' && value !== undefined) {
         newParams.set(key, value.toString());
+      } else {
+        newParams.delete(key);
       }
     });
+    
     setSearchParams(newParams);
   };
 
@@ -81,7 +94,7 @@ export default function Products() {
 
         {/* Search Bar */}
         <div className="mb-6">
-          <SearchBar onSearch={handleSearch} initialValue={searchParams.get('search') || ''} />
+          <SearchBar onSearch={handleSearch} value={searchParams.get('search') || ''} />
         </div>
 
         {/* Mobile Filter Toggle */}
@@ -97,19 +110,22 @@ export default function Products() {
         <div className="flex flex-col lg:flex-row gap-8">
           {/* Filters Sidebar */}
           <aside className={`lg:w-64 ${showFilters ? 'block' : 'hidden lg:block'}`}>
-            <ProductFilters onChange={handleFilterChange} />
+            <ProductFilters 
+              categories={categories}
+              filters={{
+                category: searchParams.get('category') || '',
+                minPrice: parseInt(searchParams.get('minPrice')) || 0,
+                maxPrice: parseInt(searchParams.get('maxPrice')) || 1000,
+                sortBy: searchParams.get('sortBy') || 'featured',
+              }}
+              onChange={handleFilterChange}
+            />
           </aside>
 
           {/* Products Grid */}
           <main className="flex-1">
-            {error && (
-              <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg mb-6">
-                <p className="text-sm">{error}</p>
-              </div>
-            )}
-
             {/* Results Summary */}
-            {!isLoading && (
+            {!isLoading && !error && (
               <div className="mb-6 flex justify-between items-center">
                 <p className="text-gray-600">
                   Showing {products.length > 0 ? ((currentPage - 1) * 12) + 1 : 0} - {Math.min(currentPage * 12, totalProducts)} of {totalProducts} products
@@ -117,18 +133,19 @@ export default function Products() {
               </div>
             )}
 
-            {isLoading ? (
-              <div className="flex justify-center py-12">
-                <Spinner size="large" />
-              </div>
-            ) : products.length > 0 ? (
-              <>
-                <ProductGrid products={products} />
+            {/* Product Grid with loading and error states */}
+            <ProductGrid 
+              products={products}
+              loading={isLoading}
+              error={!!error}
+              errorMessage={error || 'Failed to load products'}
+              emptyMessage="No products found"
+            />
 
-                {/* Pagination */}
-                {totalPages > 1 && (
-                  <div className="mt-8 flex justify-center">
-                    <nav className="flex items-center space-x-2" aria-label="Pagination">
+            {/* Pagination */}
+            {!isLoading && !error && products.length > 0 && totalPages > 1 && (
+              <div className="mt-8 flex justify-center">
+                <nav className="flex items-center space-x-2" aria-label="Pagination">
                       {/* Previous Button */}
                       <button
                         onClick={() => handlePageChange(currentPage - 1)}
@@ -180,26 +197,6 @@ export default function Products() {
                     </nav>
                   </div>
                 )}
-              </>
-            ) : (
-              <div className="text-center py-12">
-                <div className="text-6xl mb-4">🔍</div>
-                <h3 className="text-xl font-semibold text-gray-900 mb-2">
-                  No products found
-                </h3>
-                <p className="text-gray-600 mb-6">
-                  Try adjusting your search or filters to find what you&apos;re looking for
-                </p>
-                <button
-                  onClick={() => {
-                    setSearchParams(new URLSearchParams());
-                  }}
-                  className="px-6 py-2 bg-yellow-500 text-white rounded-lg hover:bg-yellow-600 transition-colors"
-                >
-                  Clear All Filters
-                </button>
-              </div>
-            )}
           </main>
         </div>
       </div>

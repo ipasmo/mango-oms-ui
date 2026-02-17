@@ -46,7 +46,8 @@ axiosInstance.interceptors.request.use(
  */
 axiosInstance.interceptors.response.use(
   (response) => {
-    return response;
+    // Return just the data portion to simplify response handling
+    return response.data;
   },
   async (error) => {
     const originalRequest = error.config;
@@ -63,7 +64,9 @@ axiosInstance.interceptors.response.use(
             refreshToken,
           });
           
-          const { token } = response.data;
+          // Handle response structure (response.data is already the API response)
+          const data = response.data?.data || response.data;
+          const { token } = data;
           localStorage.setItem(TOKEN_KEY, token);
           
           // Retry original request with new token

@@ -34,10 +34,10 @@ const Navbar = () => {
           {/* Logo/Brand */}
           <Link 
             to="/" 
-            className="text-2xl font-bold text-primary-600 hover:text-primary-700 transition-colors"
+            className="flex items-center hover:opacity-80 transition-opacity"
             aria-label="Mango OMS Home"
           >
-            Mango OMS
+            <img src="/images/logo_1.png" alt="Mango OMS" className="h-24 w-auto object-contain" />
           </Link>
 
           {/* Desktop Navigation */}

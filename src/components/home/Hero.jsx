@@ -1,9 +1,10 @@
 import { cn } from '@utils/helpers';
 import Button from '@components/common/Button';
+import VideoBackground from './VideoBackground';
 
 /**
  * Hero Component
- * Hero section with heading, subheading, CTA buttons, and background image
+ * Hero section with heading, subheading, CTA buttons, and background video
  * 
  * @param {string} title - Main heading text
  * @param {string} subtitle - Subheading text
@@ -26,46 +27,31 @@ const Hero = ({
   overlay = true,
   className,
 }) => {
-  const hasBackground = !!backgroundImage;
+  // Use mango farm video - can be local or online
+  // For local: Run 'node download-video.cjs' to download to public/videos/mango-farm.mp4
+  // For online: using Pexels free stock video (requires internet)
+  const mangoVideoUrl = 'https://videos.pexels.com/video-files/8327723/8327723-uhd_2560_1440_25fps.mp4';
 
   return (
-    <section
-      className={cn(
-        'relative flex items-center justify-center overflow-hidden',
-        height,
-        className
-      )}
-      aria-labelledby="hero-title"
+    <VideoBackground
+      videoUrl={mangoVideoUrl}
+      fallbackImage={backgroundImage || '/hero-bg.jpg'}
+      muted={true}
+      autoplay={true}
+      loop={true}
+      controls={false}
+      overlay="bg-gradient-to-r from-black/60 to-black/40"
+      className={className}
     >
-      {/* Background Image */}
-      {hasBackground && (
-        <div className="absolute inset-0 z-0">
-          <img
-            src={backgroundImage}
-            alt=""
-            className="h-full w-full object-cover"
-            loading="eager"
-          />
-          {overlay && (
-            <div className="absolute inset-0 bg-gradient-to-r from-black/60 to-black/40" />
-          )}
-        </div>
-      )}
-
-      {/* Gradient Background (if no image) */}
-      {!hasBackground && (
-        <div className="absolute inset-0 z-0 bg-gradient-to-br from-primary-600 via-primary-500 to-primary-700" />
-      )}
-
       {/* Content */}
-      <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 text-center">
+      <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 text-center h-full flex items-center justify-center">
         <div className="space-y-6">
           {/* Title */}
           <h1
             id="hero-title"
             className={cn(
               'text-4xl font-extrabold tracking-tight sm:text-5xl md:text-6xl lg:text-7xl',
-              hasBackground || !overlay ? 'text-white' : 'text-white',
+              'text-white',
               'animate-fade-in'
             )}
           >
@@ -77,7 +63,7 @@ const Hero = ({
             <p
               className={cn(
                 'mx-auto max-w-2xl text-lg sm:text-xl md:text-2xl',
-                hasBackground || !overlay ? 'text-gray-100' : 'text-white/90',
+                'text-gray-100',
                 'animate-fade-in-delay'
               )}
             >
@@ -135,24 +121,7 @@ const Hero = ({
           </div>
         </div>
       </div>
-
-      {/* Scroll Indicator */}
-      <div className="absolute bottom-8 left-1/2 -translate-x-1/2 animate-bounce">
-        <svg
-          className="h-6 w-6 text-white"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth={2}
-            d="M19 14l-7 7m0 0l-7-7m7 7V3"
-          />
-        </svg>
-      </div>
-    </section>
+    </VideoBackground>
   );
 };
 

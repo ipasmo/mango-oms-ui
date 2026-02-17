@@ -61,10 +61,18 @@ const ProductCard = ({ product, currency = 'USD', onClick, className }) => {
       {/* Product Image */}
       <div className="relative aspect-square w-full overflow-hidden rounded-lg bg-gray-100">
         <img
-          src={product.image || '/placeholder-product.jpg'}
+          src={
+            product.images && product.images.length > 0 
+              ? product.images[0] 
+              : product.image || '/images/mango-default.svg'
+          }
           alt={product.name}
           className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-110"
           loading="lazy"
+          onError={(e) => {
+            e.target.onerror = null;
+            e.target.src = '/images/mango-default.svg';
+          }}
         />
         {product.featured && (
           <span className="absolute top-2 left-2 rounded-full bg-primary-600 px-2 py-1 text-xs font-semibold text-white">

@@ -6,15 +6,16 @@ import { TOKEN_KEY, REFRESH_TOKEN_KEY, USER_KEY } from '@utils/constants';
  */
 export const login = async (credentials) => {
   const response = await axiosInstance.post('/auth/login', credentials);
+  const data = response.data || response; // Handle both wrapped and unwrapped responses
   
-  const { token, refreshToken, user } = response.data;
+  const { token, refreshToken, user } = data;
   
   // Store tokens and user data
   localStorage.setItem(TOKEN_KEY, token);
   localStorage.setItem(REFRESH_TOKEN_KEY, refreshToken);
   localStorage.setItem(USER_KEY, JSON.stringify(user));
   
-  return response.data;
+  return data;
 };
 
 /**
@@ -22,15 +23,16 @@ export const login = async (credentials) => {
  */
 export const signup = async (userData) => {
   const response = await axiosInstance.post('/auth/signup', userData);
+  const data = response.data || response; // Handle both wrapped and unwrapped responses
   
-  const { token, refreshToken, user } = response.data;
+  const { token, refreshToken, user } = data;
   
   // Store tokens and user data
   localStorage.setItem(TOKEN_KEY, token);
   localStorage.setItem(REFRESH_TOKEN_KEY, refreshToken);
   localStorage.setItem(USER_KEY, JSON.stringify(user));
   
-  return response.data;
+  return data;
 };
 
 /**
@@ -53,8 +55,7 @@ export const logout = async () => {
  * Get current user profile
  */
 export const getProfile = async () => {
-  const response = await axiosInstance.get('/auth/profile');
-  return response.data;
+  return await axiosInstance.get('/auth/profile');
 };
 
 /**
@@ -62,38 +63,38 @@ export const getProfile = async () => {
  */
 export const updateProfile = async (profileData) => {
   const response = await axiosInstance.put('/auth/profile', profileData);
+  const data = response.data || response; // Handle both wrapped and unwrapped responses
   
   // Update stored user data
-  localStorage.setItem(USER_KEY, JSON.stringify(response.data.user));
+  if (data.user) {
+    localStorage.setItem(USER_KEY, JSON.stringify(data.user));
+  }
   
-  return response.data;
+  return data;
 };
 
 /**
  * Change password
  */
 export const changePassword = async (passwordData) => {
-  const response = await axiosInstance.post('/auth/change-password', passwordData);
-  return response.data;
+  return await axiosInstance.post('/auth/change-password', passwordData);
 };
 
 /**
  * Request password reset
  */
 export const requestPasswordReset = async (email) => {
-  const response = await axiosInstance.post('/auth/forgot-password', { email });
-  return response.data;
+  return await axiosInstance.post('/auth/forgot-password', { email });
 };
 
 /**
  * Reset password with token
  */
 export const resetPassword = async (token, newPassword) => {
-  const response = await axiosInstance.post('/auth/reset-password', {
+  return await axiosInstance.post('/auth/reset-password', {
     token,
     newPassword,
   });
-  return response.data;
 };
 
 /**

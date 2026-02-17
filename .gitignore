@@ -40,3 +40,10 @@ cypress/screenshots
 # Build
 build
 .cache
+
+# Large media files (download locally)
+public/videos/*.mp4
+public/videos/*.webm
+public/videos/*.mov
+public/videos/*.avi
+!public/videos/.gitkeep

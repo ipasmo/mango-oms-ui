@@ -34,7 +34,7 @@ const benefits = [
 ];
 
 export default function Home() {
-  const { fetchFeaturedProducts, isLoading } = useProductStore();
+  const { fetchFeaturedProducts, featuredProducts, isLoading } = useProductStore();
 
   useEffect(() => {
     document.title = 'Mango OMS - Premium Quality Mangoes';
@@ -58,13 +58,10 @@ export default function Home() {
             </p>
           </div>
 
-          {isLoading ? (
-            <div className="flex justify-center py-12">
-              <Spinner size="large" />
-            </div>
-          ) : (
-            <FeaturedProducts />
-          )}
+          <FeaturedProducts 
+            products={featuredProducts}
+            loading={isLoading}
+          />
 
           <div className="text-center mt-12">
             <Link
