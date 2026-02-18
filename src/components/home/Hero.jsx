@@ -30,7 +30,7 @@ const Hero = ({
   // Use mango farm video - can be local or online
   // For local: Run 'node download-video.cjs' to download to public/videos/mango-farm.mp4
   // For online: using Pexels free stock video (requires internet)
-  const mangoVideoUrl = 'https://videos.pexels.com/video-files/8327723/8327723-uhd_2560_1440_25fps.mp4';
+  const mangoVideoUrl = 'public/videos/mango-farm.mp4'; // Local video (gitignored)
 
   return (
     <VideoBackground

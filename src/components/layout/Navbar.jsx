@@ -30,14 +30,14 @@ const Navbar = () => {
   return (
     <nav className="bg-white shadow-md sticky top-0 z-50" role="navigation" aria-label="Main navigation">
       <div className="container mx-auto px-4">
-        <div className="flex items-center justify-between h-16">
+        <div className="flex items-center justify-between h-20">
           {/* Logo/Brand */}
           <Link 
             to="/" 
-            className="flex items-center hover:opacity-80 transition-opacity"
+            className="flex items-center hover:opacity-80 transition-opacity py-2"
             aria-label="Mango OMS Home"
           >
-            <img src="/images/logo_1.png" alt="Mango OMS" className="h-24 w-auto object-contain" />
+            <img src="/images/logo_5.png" alt="Mango OMS" className="h-24 w-auto object-contain" />
           </Link>
 
           {/* Desktop Navigation */}
